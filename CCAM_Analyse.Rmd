@@ -1,0 +1,75 @@
+CCAM_Analyse
+========================================================
+
+Initialisation.
+---------------
+
+Pour des raisons de confidentialité, les données sources ne sont pas accessibles dans ce répertoire mais restent privées.
+Chemin d'accès local:
+```{r path}
+path <- "~/Documents/Resural/FEDORU/CCAM_ATU_2012_Data"
+
+# file <- "table_ccam.csv"
+# d <- read.csv2(path.data, header = TRUE, skip = 1, fileEncoding = "UTF-8")
+
+```
+Analyse du fichier ATU_2012
+---------------------------
+
+```{r atu, echo=FALSE}
+file <- "atu_2012.csv"
+path.data <- paste(path, file, sep = "/")
+
+d.atu <- read.csv2(path.data, header = TRUE, fileEncoding = "UTF-8")
+str(d.atu)
+d.atu$REGION <- as.factor(d.atu$REGION)
+
+s.region <- as.data.frame(table(d.atu$REGION)) # nb de SU par région
+colnames(s.region) <- c("Région", "nb de SU")
+s.region
+
+su.alsace <- factor(d.atu$ETABLISSEMENT[d.atu$REGION == 42]) # établissements d'Alsace (il en manque ?)
+su.alsace
+```
+
+
+Analyse du fichier base_ccam_2012
+-------------------------------------
+
+```{r ccam, echo=FALSE}
+file <- "base_ccam_2012.csv"
+path.data <- paste(path, file, sep = "/")
+
+d <- read.csv2(path.data, header = TRUE, fileEncoding = "UTF-8")
+d$Effectif.avec.ATU <- as.numeric(d$Effectif.avec.ATU)
+names(d)
+str(d)
+
+n.atu <- sum(d$Effectif.avec.ATU)        # nb total d'actes
+n.hop <- nlevels(unique(d$FINESS))       # nb d'étalissements (FINESS juridique ?)
+
+```
+En 2012, __`r n.atu`__ actes ont été réalisés au service des urgences de __`r n.hop`__ établissements de santé.
+
+Merging d et d.atu
+-------------------
+
+On peut merger les dataframe __d__ et __d.atu__ sur la colonne __FINESS__ pour récupérer l'information région que ne possède pas d. Cependant on constate qu'un certain nombre d'établissements disparaissent avec un merging simple:
+```{r merge1}
+merge1 <- merge(d, d.atu, by.x = "FINESS", by.y = "FINESS")
+merge1 <- merge1[,-6] # supprime la colonne ETABLISSEMENT redondante avec Libellé
+actes.region <- tapply(merge1$Effectif.avec.ATU, merge1$REGION, sum) # région 94 (Corse)?
+actes.region
+sum(actes.region, na.rm=TRUE) # à comparer à n.atu
+
+boxplot(merge1$Effectif.avec.ATU ~merge1$REGION, outline=FALSE) # interprétation ?
+```
+Il n'y a que 86762 lignes contre 94143 attendues.
+
+Si on impose toutes les lignes de d:
+```{r merge2}
+merge2 <- merge(d, d.atu, by.x = "FINESS", by.y = "FINESS", all.x=TRUE)
+merge2 <- merge2[,-6] # supprime la colonne ETABLISSEMENT redondante avec Libellé
+
+```
+
