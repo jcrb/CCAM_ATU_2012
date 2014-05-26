@@ -1,0 +1,107 @@
+CCAM et ATU 2012
+================
+
+Fichier source
+--------------
+- nom: _CCAM et ATU base nationale 2012 (1).xlsx_
+- source: ATIH
+- Transmis par Gille Viudes le 23 mai 2014
+- contact: [Arlette MEURIOT](ameuriot@orupaca.fr)finances
+- [Emanuel Dos Ramos](edosramos@orupaca.fr) (DIM - Thésaurus) .
+- Taille: 26.1 Mo
+- Temps de chargement par mail: 30 secondes
+- Temps d'ouverture: > 5 mn !
+- Occupation de la mémoire: 8 Go
+
+Description: classeur excel composé de 6 tables:
+- table CCAM
+- ATU 2012
+- région
+- par établissement
+- BASE DANS CODE REGROUPEMENT
+- base ccam 2012
+
+Chaque table a été isolée dans un fichier .csv portant le même nom que la table.
+Format des fichiers .csv:
+- séparateur ';'
+- UTF 8
+- champs entourés par des guillemets
+
+table ccam
+----------
+- taille: 2.1 M0
+- lignes: 28532
+- colonnes: 9
+  - Code	
+  - Texte	
+  - Activité
+  -	Phase	
+  - "Tarif(en euro)"
+  -	Rembt. ss Cdtions	
+  - Accord Préalable	
+  - Exo. TM	
+  - Regroupement
+
+ATU 2012
+--------
+- taille: 21.5 ko
+- taille 2.1 Mo
+- lignes: 451
+- colonnes: 4
+    - __FINESS__	
+    - ETABLISSEMENT	
+    - NBRE D'ATU
+    - REGION
+
+
+région
+------
+- taille: 2.2 ko
+- lignes: 31
+- colonnes: 
+- remarque: pas compris le tableau
+
+par établissement
+-----------------
+- taille: 923.6 ko
+- lignes: 1523 
+- colonnes: 
+    - colonne 1: code CCAM
+    - colonne 2: libellé du CCAM
+    - colonne 3 à n: 1 colonne par centre hospitalier
+- remarques
+    - supprimer la dernière ligne qui est un total
+    - supprimer la dernière colonne qui est un total
+- commentaire: tableau croisé CCAM/SU
+
+Base dans code regroupement
+---------------------------
+- taille: 15.8 Mo
+- lignes: 94594
+- colonnes: 13
+  - REGION	
+  - __FINESS__ 	
+  - ETABLISSEMENT	
+  - ANNEE	 
+  - Typedos 	 
+  - Acte     	
+  - CCAM
+  - libellé	 
+  - NbActes    	
+  - tarif	 
+  - MtFact     	
+  - nombre d'ATU	
+  - fréquence pour 10000 ATU
+
+
+Base CCAM 2012
+--------------
+- taille 2.1 Mo
+- lignes: 94144
+- colonnes: 5
+  - __FINESS__
+  - Libellé	(nom de l'établissement)
+  - Code CCAM	
+  - Effectif avec ATU	
+  - code acte
+
