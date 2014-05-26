@@ -47,7 +47,8 @@ str(d)
 
 n.atu <- sum(d$Effectif.avec.ATU)        # nb total d'actes
 n.hop <- nlevels(unique(d$FINESS))       # nb d'étalissements (FINESS juridique ?)
-
+freq.actes <- sort(tapply(d$Effectif.avec.ATU, d$code.acte, sum), decreasing=TRUE)
+head(freq.actes,10) # les 10 actes les plus pratiqués
 ```
 En 2012, __`r n.atu`__ actes ont été réalisés au service des urgences de __`r n.hop`__ établissements de santé.
 
