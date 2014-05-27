@@ -73,4 +73,14 @@ merge2 <- merge(d, d.atu, by.x = "FINESS", by.y = "FINESS", all.x=TRUE)
 merge2 <- merge2[,-6] # supprime la colonne ETABLISSEMENT redondante avec Libellé
 
 ```
+Croisement actes / région
+-------------------------
 
+```{r actes_regions}
+a <- tapply(merge1$Effectif.avec.ATU, list(merge1$code.acte, merge1$REGION), sum)
+str(a)
+a["DEQP003",]
+sum(a["DEQP003",], na.rm=TRUE)
+
+```
+On obtient une matrice de 27 colonnes et 1996 lignes. A standardiser sur 10.000 ATU

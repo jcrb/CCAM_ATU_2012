@@ -259,6 +259,12 @@ Chemin d&#39;accès local:</p>
 ##  $ code.acte        : Factor w/ 1996 levels &quot;AAFA001&quot;,&quot;AAGB001&quot;,..: 357 1267 1827 1843 1468 1426 1690 1227 1494 1302 ...
 </code></pre>
 
+<pre><code>## DEQP003 ZBQK002 MDQK001 NGQK001 NDQK001 ZCQK002 NFQK001 MGQK003 MAQK003 
+## 1104744  792252  486803  351125  310184  250392  204699  201511  192485 
+## QZJA002 
+##  182411
+</code></pre>
+
 <p>En 2012, <strong>8.2274 &times; 10<sup>6</sup></strong> actes ont été réalisés au service des urgences de <strong>447</strong> établissements de santé.</p>
 
 <h2>Merging d et d.atu</h2>
@@ -298,6 +304,38 @@ boxplot(merge1$Effectif.avec.ATU ~ merge1$REGION, outline = FALSE)  # interprét
 <pre><code class="r">merge2 &lt;- merge(d, d.atu, by.x = &quot;FINESS&quot;, by.y = &quot;FINESS&quot;, all.x = TRUE)
 merge2 &lt;- merge2[, -6]  # supprime la colonne ETABLISSEMENT redondante avec Libellé
 </code></pre>
+
+<h2>Croisement actes / région</h2>
+
+<pre><code class="r">a &lt;- tapply(merge1$Effectif.avec.ATU, list(merge1$code.acte, merge1$REGION), 
+    sum)
+str(a)
+</code></pre>
+
+<pre><code>##  num [1:1996, 1:27] NA 1 1 NA NA NA 50 23 NA 413 ...
+##  - attr(*, &quot;dimnames&quot;)=List of 2
+##   ..$ : chr [1:1996] &quot;AAFA001&quot; &quot;AAGB001&quot; &quot;AAJA001&quot; &quot;AAJA004&quot; ...
+##   ..$ : chr [1:27] &quot;11&quot; &quot;12&quot; &quot;21&quot; &quot;22&quot; ...
+</code></pre>
+
+<pre><code class="r">a[&quot;DEQP003&quot;, ]
+</code></pre>
+
+<pre><code>##     11     12     21     22     23     24     25     26     31     41 
+## 195642  17538  17742  34311  33832  46364  32889  32414  79471  40268 
+##     42     43     52     53     54     72     73     74     82     83 
+##  27821  25671  49733  48340  35288  56253  40730   8801  90903   9787 
+##     91     93     94   9701   9702   9703   9704 
+##  33142  66691     NA   5559   4660   3206   9521
+</code></pre>
+
+<pre><code class="r">sum(a[&quot;DEQP003&quot;, ], na.rm = TRUE)
+</code></pre>
+
+<pre><code>## [1] 1046577
+</code></pre>
+
+<p>On obtient une matrice de 27 colonnes et 1996 lignes. A standardiser sur 10.000 ATU</p>
 
 </body>
 

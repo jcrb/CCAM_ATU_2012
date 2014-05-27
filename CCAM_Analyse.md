@@ -92,6 +92,13 @@ Analyse du fichier base_ccam_2012
 ##  $ code.acte        : Factor w/ 1996 levels "AAFA001","AAGB001",..: 357 1267 1827 1843 1468 1426 1690 1227 1494 1302 ...
 ```
 
+```
+## DEQP003 ZBQK002 MDQK001 NGQK001 NDQK001 ZCQK002 NFQK001 MGQK003 MAQK003 
+## 1104744  792252  486803  351125  310184  250392  204699  201511  192485 
+## QZJA002 
+##  182411
+```
+
 En 2012, __8.2274 &times; 10<sup>6</sup>__ actes ont été réalisés au service des urgences de __447__ établissements de santé.
 
 Merging d et d.atu
@@ -139,4 +146,42 @@ merge2 <- merge(d, d.atu, by.x = "FINESS", by.y = "FINESS", all.x = TRUE)
 merge2 <- merge2[, -6]  # supprime la colonne ETABLISSEMENT redondante avec Libellé
 ```
 
+Croisement actes / région
+-------------------------
 
+
+```r
+a <- tapply(merge1$Effectif.avec.ATU, list(merge1$code.acte, merge1$REGION), 
+    sum)
+str(a)
+```
+
+```
+##  num [1:1996, 1:27] NA 1 1 NA NA NA 50 23 NA 413 ...
+##  - attr(*, "dimnames")=List of 2
+##   ..$ : chr [1:1996] "AAFA001" "AAGB001" "AAJA001" "AAJA004" ...
+##   ..$ : chr [1:27] "11" "12" "21" "22" ...
+```
+
+```r
+a["DEQP003", ]
+```
+
+```
+##     11     12     21     22     23     24     25     26     31     41 
+## 195642  17538  17742  34311  33832  46364  32889  32414  79471  40268 
+##     42     43     52     53     54     72     73     74     82     83 
+##  27821  25671  49733  48340  35288  56253  40730   8801  90903   9787 
+##     91     93     94   9701   9702   9703   9704 
+##  33142  66691     NA   5559   4660   3206   9521
+```
+
+```r
+sum(a["DEQP003", ], na.rm = TRUE)
+```
+
+```
+## [1] 1046577
+```
+
+On obtient une matrice de 27 colonnes et 1996 lignes. A standardiser sur 10.000 ATU
