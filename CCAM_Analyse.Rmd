@@ -84,3 +84,44 @@ sum(a["DEQP003",], na.rm=TRUE)
 
 ```
 On obtient une matrice de 27 colonnes et 1996 lignes. A standardiser sur 10.000 ATU
+
+Base dans code regroupement
+---------------------------
+
+```{r bdcg}
+file <- "base_dans_code_regroupement.csv"
+path.data <- paste(path, file, sep = "/")
+d.base <- read.csv2(path.data, header = TRUE, fileEncoding = "UTF-8")
+
+d.base$fréquence.pour.10000.ATU <- as.numeric(d.base$fréquence.pour.10000.ATU)
+d.base$REGION <- as.factor(d.base$REGION)
+d.base$tarif <- as.numeric(gsub(",", ".", d.base$tarif))
+d.base$X.MtFact..... <- as.numeric(gsub(",", ".", d.base$X.MtFact.....))
+
+str(d.base)
+
+total.facture <- sum(d.base$X.MtFact....., na.rm=TRUE) # 224 254 885 €
+
+```
+
+#### Code ECG
+
+Ce fichier comporte une colonne intitulée __fréquence pour 10000 ATU__
+```{r ecg, comment=""}
+
+ecg <- d.base[d.base$CCAM == "DEQP003", c("fréquence.pour.10000.ATU", "REGION", "nombre.d.ATU")]
+nrow(ecg)
+summary(ecg)
+summary(ecg$fréquence.pour.10000.ATU)
+n.atu <- sum(ecg$nombre.d.ATU)
+n.atu
+```
+
+Pour chaque région on calcule un boxplot. On range les boxplot par médiane croissante. On utilise pour cela la méthode __reorder__ qui admet trois variables: la fréquence pour 10000 ATU partitionée par REGION et une fonction, la médiane.
+```{r ecg_médiane}
+bymedian <- with(ecg, reorder(REGION, fréquence.pour.10000.ATU, median))
+boxplot(fréquence.pour.10000.ATU ~ bymedian, data = ecg, ylab="nombre d'ECG", xlab="Régions", main="Nombre d'ECG (DEQP003) pour 10.000 ATU par région", col = "lightgray", las=2)
+m <- mean(ecg$fréquence.pour.10000.ATU)
+abline(h = m, col="red", lty=2)
+```
+

@@ -1,0 +1,30 @@
+Fichier "Base dans code regroupement"
+========================================================
+
+```{r bdcg}
+path <- "~/Documents/Resural/FEDORU/CCAM_ATU_2012_Data"
+file <- "base_dans_code_regroupement.csv"
+path.data <- paste(path, file, sep = "/")
+d.base <- read.csv2(path.data, header = TRUE, fileEncoding = "UTF-8")
+libelle <- c("REGION", "FINESS", "ETABLISSEMENT", "ANNEE", "TYPEDOS", "ACTE","CCAM","LIBELLE.ACTE","NB.ACTES","TARIF","MT.FACTURE","NB.ATU","FREQ.1000.ATU")
+names(d.base) <- libelle
+
+d.base$FREQ.1000.ATU <- as.numeric(d.base$FREQ.1000.ATU)
+d.base$REGION <- as.factor(d.base$REGION)
+d.base$TARIF <- as.numeric(gsub(",", ".", d.base$TARIF))
+d.base$MT.FACTURE <- as.numeric(gsub(",", ".", d.base$MT.FACTURE))
+# supprimer les blancs
+d.base$ETABLISSEMENT <- trim(d.base$ETABLISSEMENT)
+d.base$FINESS <- trim(d.base$FINESS)
+
+str(d.base)
+
+n.hop <- unique(d.base$ETABLISSEMENT)
+n.finess <- unique(d.base$FINESS)
+n.region <- unique(d.base$REGION)
+
+total.facture <- sum(d.base$MT.FACTURE, na.rm=TRUE) # 224 254 885 €
+
+```
+
+a <- d.base[d.base$CCAM == "DEQP003", c("CCAM", "REGION", "FINESS", "FREQ.1000.ATU")]

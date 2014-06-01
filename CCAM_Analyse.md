@@ -185,3 +185,121 @@ sum(a["DEQP003", ], na.rm = TRUE)
 ```
 
 On obtient une matrice de 27 colonnes et 1996 lignes. A standardiser sur 10.000 ATU
+
+Base dans code regroupement
+---------------------------
+
+
+```r
+file <- "base_dans_code_regroupement.csv"
+path.data <- paste(path, file, sep = "/")
+d.base <- read.csv2(path.data, header = TRUE, fileEncoding = "UTF-8")
+
+d.base$fréquence.pour.10000.ATU <- as.numeric(d.base$fréquence.pour.10000.ATU)
+d.base$REGION <- as.factor(d.base$REGION)
+d.base$tarif <- as.numeric(gsub(",", ".", d.base$tarif))
+```
+
+```
+## Warning: NAs introduits lors de la conversion automatique
+```
+
+```r
+d.base$X.MtFact..... <- as.numeric(gsub(",", ".", d.base$X.MtFact.....))
+```
+
+```
+## Warning: NAs introduits lors de la conversion automatique
+```
+
+```r
+
+str(d.base)
+```
+
+```
+## 'data.frame':	94593 obs. of  13 variables:
+##  $ REGION                  : Factor w/ 27 levels "11","12","21",..: 19 19 19 19 19 19 19 19 19 19 ...
+##  $ FINESS.                 : Factor w/ 450 levels "100000017","100006279",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ ETABLISSEMENT           : Factor w/ 897 levels "ALPHA SANTE",..: 213 213 213 213 213 213 213 213 213 213 ...
+##  $ ANNEE                   : int  2012 2012 2012 2012 2012 2012 2012 2012 2012 2012 ...
+##  $ X.Typedos.              : logi  NA NA NA NA NA NA ...
+##  $ X.Acte.....             : Factor w/ 10 levels "0","ACO","ADA",..: 7 6 6 6 6 6 4 6 7 6 ...
+##  $ CCAM                    : Factor w/ 1997 levels "AAFA001","AAGB001",..: 357 1267 1828 1844 1468 1426 1691 1227 1495 1302 ...
+##  $ libellé                 : Factor w/ 1979 levels "","Ablation de broche d'ostéosynthèse enfouie, par voie transcutanée sans guidage",..: 569 1418 1456 1406 1413 1465 1270 1410 314 1441 ...
+##  $ X.NbActes....           : int  1327 1017 957 810 630 600 459 364 333 331 ...
+##  $ tarif                   : num  13.5 19.9 21.3 19.9 19.9 ...
+##  $ X.MtFact.....           : num  17941 20289 20365 16160 12568 ...
+##  $ nombre.d.ATU            : int  13769 13769 13769 13769 13769 13769 13769 13769 13769 13769 ...
+##  $ fréquence.pour.10000.ATU: num  1109 925 883 775 639 ...
+```
+
+```r
+
+total.facture <- sum(d.base$X.MtFact....., na.rm = TRUE)  # 224 254 885 €
+```
+
+
+#### Code ECG
+
+Ce fichier comporte une colonne intitulée __fréquence pour 10000 ATU__
+
+```r
+
+ecg <- d.base[d.base$CCAM == "DEQP003", c("fréquence.pour.10000.ATU", "REGION", 
+    "nombre.d.ATU")]
+nrow(ecg)
+```
+
+```
+[1] 444
+```
+
+```r
+summary(ecg)
+```
+
+```
+ fréquence.pour.10000.ATU     REGION     nombre.d.ATU   
+ Min.   :   4             11     : 44   Min.   :   750  
+ 1st Qu.: 226             82     : 43   1st Qu.: 11361  
+ Median : 442             93     : 35   Median : 18062  
+ Mean   : 558             31     : 27   Mean   : 25821  
+ 3rd Qu.: 958             73     : 26   3rd Qu.: 31350  
+ Max.   :1132             53     : 21   Max.   :746755  
+                          (Other):248                   
+```
+
+```r
+summary(ecg$fréquence.pour.10000.ATU)
+```
+
+```
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      4     226     442     558     958    1130 
+```
+
+```r
+n.atu <- sum(ecg$nombre.d.ATU)
+n.atu
+```
+
+```
+[1] 11464364
+```
+
+
+Pour chaque région on calcule un boxplot. On range les boxplot par médiane croissante. On utilise pour cela la méthode __reorder__ qui admet trois variables: la fréquence pour 10000 ATU partitionée par REGION et une fonction, la médiane.
+
+```r
+bymedian <- with(ecg, reorder(REGION, fréquence.pour.10000.ATU, median))
+boxplot(fréquence.pour.10000.ATU ~ bymedian, data = ecg, ylab = "nombre d'ECG", 
+    xlab = "Régions", main = "Nombre d'ECG (DEQP003) pour 10.000 ATU par région", 
+    col = "lightgray", las = 2)
+m <- mean(ecg$fréquence.pour.10000.ATU)
+abline(h = m, col = "red", lty = 2)
+```
+
+![plot of chunk ecg_médiane](figure/ecg_médiane.png) 
+
+
